@@ -1,5 +1,5 @@
 module PolymorphicTypeRestrictions
-  Restriction = Struct.new(:attribute_name, :allowed_type)
+  Restriction = Struct.new(:attribute_name, :allowed_types)
 
   class <<self
     def included(base)
@@ -20,10 +20,10 @@ module PolymorphicTypeRestrictions
                 restriction.attribute_name == :"#{attribute_name.to_s.sub(/_type$/, '')}"
               end
               if restriction
-                unless clazz.ancestors.include?(restriction.allowed_type)
+                if (restriction.allowed_types & clazz.ancestors).empty?
                   raise(
                     ActiveRecord::AssociationTypeMismatch,
-                    "#{attribute_name} only allows objects of type #{restriction.allowed_type}"
+                    "#{attribute_name} only allows objects of type #{restriction.allowed_types * ', '}"
                   )
                 end
               end
@@ -37,11 +37,16 @@ module PolymorphicTypeRestrictions
 
       class <<base
         def belongs_to_with_polymorphic_type_restrictions(attribute_name, options = {})
-          if allowed_type = options.delete(:allow)
-            if allowed_type.respond_to?(:constantize)
-              allowed_type = allowed_type.constantize
+          if allowed_types = options.delete(:allow)
+            allowed_types = Array(allowed_types).map! do |allowed_type|
+              if allowed_type.respond_to?(:constantize)
+                allowed_type = allowed_type.constantize
+              end
             end
-            write_inheritable_array(:polymorphic_type_restrictions, [Restriction.new(attribute_name.to_sym, allowed_type)])
+            write_inheritable_array(
+              :polymorphic_type_restrictions,
+              [Restriction.new(attribute_name.to_sym, Array(allowed_types))]
+            )
           end
           belongs_to_without_polymorphic_type_restrictions(attribute_name, options)
         end

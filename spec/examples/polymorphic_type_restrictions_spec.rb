@@ -12,6 +12,12 @@ describe PolymorphicTypeRestrictions do
       @comment.commentable.should == post
     end
 
+    it 'should allow photos to be set directly' do
+      photo = Photo.new
+      lambda { @comment.commentable = photo }.should_not raise_error
+      @comment.commentable.should == photo
+    end
+
     it 'should not allow non-commentables to be set directly' do
       lambda do
         @comment.commentable = User.new
@@ -27,6 +33,17 @@ describe PolymorphicTypeRestrictions do
         }
       end.should_not raise_error
       @comment.commentable_type.should == 'Post'
+      @comment.commentable_id.should == 1
+    end
+
+    it 'should allow photos to be set indirectly' do
+      lambda do
+        @comment.attributes = {
+          :commentable_type => 'Photo',
+          :commentable_id => 1
+        }
+      end.should_not raise_error
+      @comment.commentable_type.should == 'Photo'
       @comment.commentable_id.should == 1
     end
 

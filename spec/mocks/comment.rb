@@ -1,7 +1,7 @@
 class Comment < ActiveRecord::Base
   belongs_to :commentable,
              :polymorphic => true,
-             :allow => 'Commentable'
+             :allow => ['Commentable', 'Photo']
 
   # This is here to ensure that classes can explicitly define *_type= methods
   # as they would expect.
