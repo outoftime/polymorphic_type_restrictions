@@ -4,11 +4,11 @@
 
 By default, ActiveRecord's polymorphic associations allow any type to be set.
 In practice, it is often only a subset of types that should actually be allowed
-in the association. This plugin adds an <tt>:allow</tt> option to the <tt>belongs_to</tt>
-class method, which will raise an ActiveRecord::AssociationTypeMismatch error if
-a non-allowed type is passed into the association. This is the same exception
-that is raised if you pass an object of the wrong type into a non-polymorphic
-association.
+in the association. This plugin adds an <tt>:allow</tt> option to the
+<tt>belongs_to</tt> class method, which will raise an
+<tt>ActiveRecord::AssociationTypeMismatch</tt> error if a non-allowed type is
+passed into the association. This is the same exception that is raised if you
+pass an object of the wrong type into a non-polymorphic association.
 
 ==== Also...
 
