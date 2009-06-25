@@ -1,13 +1,15 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 
 describe PolymorphicTypeRestrictions do
-  context 'with restricted polymorphic association' do
+  describe 'with restricted polymorphic association' do
     before :each do
       @comment = Comment.new
     end
 
     it 'should allow commentables to be set directly' do
-      lambda { @comment.commentable = Post.new }.should_not raise_error
+      post = Post.new
+      lambda { @comment.commentable = post }.should_not raise_error
+      @comment.commentable.should == post
     end
 
     it 'should not allow non-commentables to be set directly' do
@@ -16,6 +18,7 @@ describe PolymorphicTypeRestrictions do
       end.should raise_error(ActiveRecord::AssociationTypeMismatch)
     end
 
+
     it 'should allow commentables to be set indirectly' do
       lambda do
         @comment.attributes = {
@@ -23,6 +26,8 @@ describe PolymorphicTypeRestrictions do
           :commentable_id => 1
         }
       end.should_not raise_error
+      @comment.commentable_type.should == 'Post'
+      @comment.commentable_id.should == 1
     end
 
     it 'should not allow non-commentables to be set indirectly' do
@@ -44,9 +49,20 @@ describe PolymorphicTypeRestrictions do
     end
   end
 
-  context 'without restricted polymorphic association' do
+  describe 'without restricted polymorphic association' do
     before :each do
       @photo = Photo.new
+    end
+
+    it 'should not raise an AssociationTypeError for normal input' do
+      lambda do
+        @photo.attributes = {
+          :attached_type => 'Post',
+          :attached_id => 1
+        }
+      end.should_not raise_error
+      @photo.attached_type.should == 'Post'
+      @photo.attached_id.should == 1
     end
 
     it 'should raise an AssociationTypeError if type doesn\'t exist' do
