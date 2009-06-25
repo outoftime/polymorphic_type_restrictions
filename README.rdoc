@@ -45,8 +45,8 @@ module.
 
 === Contributors
 
-Mat Brown <mat@patch.com>
-Adam Hooper <adam@patch.com>
+* Mat Brown <mat@patch.com>
+* Adam Hooper <adam@patch.com>
 
 === License
 
