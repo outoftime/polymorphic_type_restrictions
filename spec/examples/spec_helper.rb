@@ -20,6 +20,9 @@ ActiveRecord::Schema.define do
   create_table(:comments, :force => true) do |t|
     t.references :commentable, :polymorphic => true
   end
+  create_table(:photos, :force => true) do |t|
+    t.references :attached, :polymorphic => true
+  end
   create_table(:users, :force => true) {}
 end
 $stdout = stdout

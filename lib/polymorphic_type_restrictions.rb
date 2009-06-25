@@ -26,6 +26,11 @@ module PolymorphicTypeRestrictions
            alias_method_chain #{association_name.inspect}=, :type_restriction
 
            def #{association_name}_type=(class_name)
+             begin
+               clazz = class_name.constantize
+             rescue NameError => e
+               raise(ActiveRecord::AssociationTypeNameError, e.message)
+             end
              unless class_name.constantize.ancestors.include?(#{allow})
                raise(
                  ActiveRecord::AssociationTypeMismatch,
@@ -35,7 +40,22 @@ module PolymorphicTypeRestrictions
              write_attribute(#{:"#{association_name}_type".inspect}, class_name)
            end
          RUBY
+       else
+         module_eval(<<-RUBY)
+           def #{association_name}_type=(class_name)
+             begin
+               class_name.constantize
+             rescue NameError => e
+               raise(ActiveRecord::AssociationTypeNameError, e.message)
+             end
+             write_attribute(#{:"#{association_name}_type".inspect}, class_name)
+           end
+         RUBY
        end
     end
-   end
+  end
+end
+
+module ActiveRecord
+  AssociationTypeNameError = Class.new(NameError)
 end
