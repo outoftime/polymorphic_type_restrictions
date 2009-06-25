@@ -4,7 +4,7 @@
 
 By default, ActiveRecord's polymorphic associations allow any type to be set.
 In practice, it is often only a subset of types that should actually be allowed
-in the association. This plugin adds an +:allow+ option to the +belongs_to+
+in the association. This plugin adds an <tt>:allow</tt> option to the <tt>belongs_to</tt>
 class method, which will raise an ActiveRecord::AssociationTypeMismatch error if
 a non-allowed type is passed into the association. This is the same exception
 that is raised if you pass an object of the wrong type into a non-polymorphic
@@ -12,15 +12,15 @@ association.
 
 ==== Also...
 
-If a bogus class name is passed into the +XXX_type=+ method for a polymorphic
-association, no exception is raised (certain validations will then cause a
-NameError to be raised, though). Since in a standard Rails use-case none of the
-application code will explicitly deal with that attribute value, there's no DRY
-way to make sure that a legit class name is being passed in. With this plugin
-installed, the setter fails fast, raising an
-ActiveRecord::AssociationTypeNameError (this is a new one) if the class name
-does not exist. That way, your application can easily catch the error in a
-+#rescue_action+ implementation.
+If a bogus class name is passed into the <tt>XXX_type=</tt> method for a
+polymorphic association, no exception is raised (certain validations will then
+cause a NameError to be raised, though). Since in a standard Rails use-case none
+of the application code will explicitly deal with that attribute value, there's
+no DRY way to make sure that a legit class name is being passed in. With this
+plugin installed, the setter fails fast, raising an
+<tt>ActiveRecord::AssociationTypeNameError</tt> (this is a new one) if the class
+name does not exist. That way, your application can easily catch the error in a
+<tt>#rescue_action</tt> implementation.
 
 === Installation
 
@@ -32,7 +32,7 @@ Then in your config/environment.rb
 
 === Usage
 
-Just use the +:allow+ key for +belongs_to+:
+Just use the <tt>:allow</tt> key for <tt>belongs_to</tt>:
 
   class Comment
     belongs_to :commentable,
